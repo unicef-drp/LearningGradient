@@ -1,28 +1,22 @@
 # ============================================================
-# setup_renv.R – Reproducible environment setup
+# setup_renv.R – Pin exact package versions via renv
 # ============================================================
-# Run once: source("setup_renv.R") then restart R.
+# Optional. Required packages are installed automatically by
+# project_config.R on first session. This script pins exact
+# versions from renv.lock for reproducibility (audits, CI,
+# publications).
+#
+# Usage: source("setup_renv.R")
+# ============================================================
 
-if (!requireNamespace("renv", quietly = TRUE)) {
-  install.packages("renv", repos = "https://cloud.r-project.org")
-}
-library(renv)
+message("=== setup_renv.R: Pinning exact package versions ===")
 
-if (file.exists("renv.lock")) {
-  # Restore pinned versions from lockfile
-  renv::restore(prompt = FALSE)
-  message("Setup complete. Restored from renv.lock. Run source(\"run_all.R\") to fetch data and run the pipeline.")
-} else {
-  # First-time: initialize, install packages, snapshot
-  renv::init(bare = TRUE)
-  packages <- c(
-    "readr", "dplyr", "tidyr", "ggplot2", "stringr", "jsonlite", "rsdmx"
-  )
-  for (pkg in packages) {
-    if (!requireNamespace(pkg, quietly = TRUE)) {
-      renv::install(pkg)
-    }
-  }
-  renv::snapshot()
-  message("Setup complete. Restart R; then run source(\"run_all.R\") to fetch data and run the pipeline.")
+if (!file.exists("renv.lock")) {
+  stop("renv.lock not found. Run from project root.", call. = FALSE)
 }
+
+if (file.exists("renv/activate.R")) source("renv/activate.R")
+
+renv::restore()
+
+message("=== Versions pinned. Restart R, then run: source(\"run_all.R\") ===")

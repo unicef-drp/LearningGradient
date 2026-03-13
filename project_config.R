@@ -33,17 +33,26 @@ dw_csv_path <- file.path(rawDataFolder, "0101_learning_gradient_unicef_dw.csv")
 # Country-region metadata API (UNICEF Country-and-Region-Metadata)
 country_regions_url <- "https://raw.githubusercontent.com/unicef-drp/Country-and-Region-Metadata/refs/heads/main/output/all_regions_long_format.csv"
 
-# Required packages (must be installed; run setup_renv.R if missing)
+# Required packages (auto-install missing packages on first run)
 required_packages <- c("readr", "dplyr", "tidyr", "ggplot2", "stringr", "jsonlite", "rsdmx")
-for (pkg in required_packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
+missing <- required_packages[!vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)]
+
+if (length(missing) > 0) {
+  message("Installing missing packages: ", paste(missing, collapse = ", "))
+  install.packages(missing)
+
+  still_missing <- missing[!vapply(missing, requireNamespace, logical(1), quietly = TRUE)]
+  if (length(still_missing) > 0) {
     stop(
-      "Package '", pkg, "' is required but not installed. Run setup_renv.R or install.packages(\"", pkg, "\").",
+      "Failed to install: ", paste(still_missing, collapse = ", "),
+      "\nOn Windows, ensure Rtools is installed: https://cran.r-project.org/bin/windows/Rtools/",
+      "\nOn Linux, you may need: sudo apt-get install libxml2-dev libcurl4-openssl-dev",
       call. = FALSE
     )
   }
-  suppressPackageStartupMessages(library(pkg, character.only = TRUE))
 }
+
+invisible(lapply(required_packages, library, character.only = TRUE))
 
 # Create directories if missing
 dirs <- c(documentation, rawDataFolder, userFunctionsFolder, scriptsFolder,
@@ -61,3 +70,4 @@ for (d in dirs) {
 # first-time execution contexts. The default is FALSE to avoid
 # unintended package installation during routine sessions.
 if (!exists("FORCE_RENV_RESTORE")) FORCE_RENV_RESTORE <- FALSE
+
