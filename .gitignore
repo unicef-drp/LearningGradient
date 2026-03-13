@@ -1,0 +1,30 @@
+# R
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+renv/library/
+renv/local/
+renv/staging/
+
+# Outputs (ignore content, keep folder structure via placeholder)
+01_data/
+03_output/
+03_output/*/
+!03_output/.placeholder_file
+!03_output/**/.placeholder_file
+!03_output/README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env (do not commit secrets)
+.env
+.env.local
+
+# IDE
+.idea/
+*.sublime-*
+.Rproj.user
+.vscode/settings.json
