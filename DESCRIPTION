@@ -1,0 +1,11 @@
+Type: project
+Description: UNICEF Foundational Learning Gradient pipeline
+Depends:
+    readr,
+    dplyr,
+    tidyr,
+    ggplot2,
+    stringr,
+    jsonlite,
+    conflicted,
+    curl
